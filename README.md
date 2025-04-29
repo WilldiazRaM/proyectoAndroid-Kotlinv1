@@ -9,7 +9,7 @@ Aplicación de registro de usuarios que consume un API REST local con Node.js.
 - Android Studio Hedgehog o superior  
 - Android SDK 34  
 - Dispositivo/emulador con Android 8.0+  
-- Backend Node.js corriendo en `http://10.0.2.2:3000`
+- Backend Node.js corriendo en `http://localhost:3000` (VER PPT BACKEND)
 
 ---
 
