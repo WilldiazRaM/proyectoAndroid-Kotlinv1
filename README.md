@@ -145,6 +145,7 @@ call.enqueue(object : Callback<Usuario> {
 2. Abrir en Android Studio  
 3. Ejecutar en emulador o dispositivo  
 4. Asegurarse de que el backend esté corriendo en `http://10.0.2.2:3000`
+5. Url del respositorio back-end node.js: `https://github.com/WilldiazRaM/backsqlite` 
 
 ---
 
