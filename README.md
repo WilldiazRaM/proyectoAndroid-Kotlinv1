@@ -13,6 +13,23 @@ Aplicación de registro de usuarios que consume un API REST local con Node.js.
 
 ---
 
+## 🔄 ¿Qué es una API REST?
+
+Una **API REST** (Representational State Transfer) es un estilo arquitectónico para diseñar servicios web que utiliza:
+
+✔️ **Protocolo HTTP** como base  
+✔️ **Operaciones CRUD** (Create, Read, Update, Delete) mediante métodos HTTP:  
+   - `GET` → Obtener recursos  
+   - `POST` → Crear recursos  
+   - `PUT`/`PATCH` → Actualizar recursos  
+   - `DELETE` → Eliminar recursos  
+
+✔️ **Formatos estándar** como JSON para intercambio de datos  
+✔️ **Stateless** (sin estado entre peticiones)  
+
+
+
+
 ## 🏗 Estructura del proyecto
 
 ```
@@ -91,9 +108,24 @@ object RetrofitClient {
 
 ```kotlin
 interface ApiService {
+
+    // Operaciones CRUD completas
+    @GET("usuarios")
+    fun obtenerTodosUsuarios(): Call<List<Usuario>>
+
+    @GET("usuarios/{id}")
+    fun obtenerUsuarioPorId(@Path("id") id: Int): Call<Usuario>
+
     @POST("usuarios")
-    fun registrarUsuario(@Body usuario: Usuario): Call<Usuario>
+    fun crearUsuario(@Body usuario: Usuario): Call<Usuario>
+
+    @PUT("usuarios/{id}")
+    fun actualizarUsuario(@Path("id") id: Int, @Body usuario: Usuario): Call<Usuario>
+
+    @DELETE("usuarios/{id}")
+    fun eliminarUsuario(@Path("id") id: Int): Call<Void>
 }
+
 ```
 
 ---
@@ -120,6 +152,161 @@ btnRegister.setOnClickListener {
     }
 }
 ```
+
+## 🛠 Funcionalidades CRUD Implementadas (Código) Fecha.09.05.2025
+
+### 1. Crear Usuario
+```kotlin
+private fun crearUsuario() {
+    val usuario = Usuario(
+        nombre = etNombre.text.toString(),
+        correo = etCorreo.text.toString(),
+        contrasena = etContrasena.text.toString()
+    )
+
+    progressBar.visibility = View.VISIBLE
+    RetrofitClient.instance.crearUsuario(usuario).enqueue(object : Callback<Usuario> {
+        override fun onResponse(call: Call<Usuario>, response: Response<Usuario>) {
+            progressBar.visibility = View.GONE
+            if (response.isSuccessful) {
+                Toast.makeText(this@GestionUsuariosActivity,
+                    "Usuario creado exitosamente", Toast.LENGTH_SHORT).show()
+                limpiarCampos()
+                cargarUsuarios()
+            } else {
+                Toast.makeText(this@GestionUsuariosActivity,
+                    "Error al crear usuario: ${response.code()}", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        override fun onFailure(call: Call<Usuario>, t: Throwable) {
+            progressBar.visibility = View.GONE
+            Toast.makeText(this@GestionUsuariosActivity,
+                "Error de conexión: ${t.message}", Toast.LENGTH_SHORT).show()
+        }
+    })
+}
+```
+### 2. Leer Usuarios (Listar todos)
+```
+private fun cargarUsuarios() {
+    progressBar.visibility = View.VISIBLE
+    RetrofitClient.instance.obtenerTodosUsuarios().enqueue(object : Callback<List<Usuario>> {
+        override fun onResponse(call: Call<List<Usuario>>, response: Response<List<Usuario>>) {
+            progressBar.visibility = View.GONE
+            if (response.isSuccessful) {
+                usuariosList.clear()
+                response.body()?.let { usuariosList.addAll(it) }
+                adapter.notifyDataSetChanged()
+            } else {
+                Toast.makeText(this@GestionUsuariosActivity,
+                    "Error al cargar usuarios: ${response.code()}", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        override fun onFailure(call: Call<List<Usuario>>, t: Throwable) {
+            progressBar.visibility = View.GONE
+            Toast.makeText(this@GestionUsuariosActivity,
+                "Error de conexión: ${t.message}", Toast.LENGTH_SHORT).show()
+        }
+    })
+}
+```
+### 3. Buscar Usuario por ID
+```
+private fun buscarUsuario() {
+    val id = etIdUsuario.text.toString().toInt()
+
+    progressBar.visibility = View.VISIBLE
+    RetrofitClient.instance.obtenerUsuarioPorId(id).enqueue(object : Callback<Usuario> {
+        override fun onResponse(call: Call<Usuario>, response: Response<Usuario>) {
+            progressBar.visibility = View.GONE
+            if (response.isSuccessful) {
+                response.body()?.let { usuario ->
+                    etNombre.setText(usuario.nombre)
+                    etCorreo.setText(usuario.correo)
+                } ?: run {
+                    Toast.makeText(this@GestionUsuariosActivity,
+                        "Usuario no encontrado", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this@GestionUsuariosActivity,
+                    "Error al buscar usuario: ${response.code()}", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        override fun onFailure(call: Call<Usuario>, t: Throwable) {
+            progressBar.visibility = View.GONE
+            Toast.makeText(this@GestionUsuariosActivity,
+                "Error de conexión: ${t.message}", Toast.LENGTH_SHORT).show()
+        }
+    })
+}
+```
+### 4. Actualizar Usuario
+```
+private fun actualizarUsuario() {
+    val id = etIdUsuario.text.toString().toInt()
+    val usuario = Usuario(
+        nombre = etNombre.text.toString(),
+        correo = etCorreo.text.toString(),
+        contrasena = etContrasena.text.toString()
+    )
+
+    progressBar.visibility = View.VISIBLE
+    RetrofitClient.instance.actualizarUsuario(id, usuario).enqueue(object : Callback<Usuario> {
+        override fun onResponse(call: Call<Usuario>, response: Response<Usuario>) {
+            progressBar.visibility = View.GONE
+            if (response.isSuccessful) {
+                Toast.makeText(this@GestionUsuariosActivity,
+                    "Usuario actualizado exitosamente", Toast.LENGTH_SHORT).show()
+                limpiarCampos()
+                cargarUsuarios()
+            } else {
+                Toast.makeText(this@GestionUsuariosActivity,
+                    "Error al actualizar usuario: ${response.code()}", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        override fun onFailure(call: Call<Usuario>, t: Throwable) {
+            progressBar.visibility = View.GONE
+            Toast.makeText(this@GestionUsuariosActivity,
+                "Error de conexión: ${t.message}", Toast.LENGTH_SHORT).show()
+        }
+    })
+}
+```
+### 5. Eliminar Usuario
+```
+private fun eliminarUsuario() {
+    val id = etIdUsuario.text.toString().toInt()
+
+    progressBar.visibility = View.VISIBLE
+    RetrofitClient.instance.eliminarUsuario(id).enqueue(object : Callback<Void> {
+        override fun onResponse(call: Call<Void>, response: Response<Void>) {
+            progressBar.visibility = View.GONE
+            if (response.isSuccessful) {
+                Toast.makeText(this@GestionUsuariosActivity,
+                    "Usuario eliminado exitosamente", Toast.LENGTH_SHORT).show()
+                limpiarCampos()
+                cargarUsuarios()
+            } else {
+                Toast.makeText(this@GestionUsuariosActivity,
+                    "Error al eliminar usuario: ${response.code()}", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        override fun onFailure(call: Call<Void>, t: Throwable) {
+            progressBar.visibility = View.GONE
+            Toast.makeText(this@GestionUsuariosActivity,
+                "Error de conexión: ${t.message}", Toast.LENGTH_SHORT).show()
+        }
+    })
+}
+```
+
+
+
 
 ### Manejo de respuesta
 
