@@ -10,8 +10,7 @@
     <string name="eliminar">Eliminar</string>
     <string name="confirmar_eliminacion">Confirmar eliminación</string>
     <string name="mensaje_confirmacion">¿Está seguro que desea eliminar este usuario?</string>
-    <string name="error
-    _campos">Complete todos los campos</string>
+    <string name="error_campos">Complete todos los campos</string>
     <string name="error_id">Ingrese un ID válido</string>
     <string name="user_info_format">ID: %1$d | Email: %2$s</string>
     <string name="error_loading_users">Error al cargar usuarios: %1$d</string>
