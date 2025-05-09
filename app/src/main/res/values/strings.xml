@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="id_hint">ID (para buscar/actualizar/eliminar)</string>
+    <string name="nombre_hint">Nombre</string>
+    <string name="correo_hint">Correo electrónico</string>
+    <string name="contrasena_hint">Contraseña</string>
+    <string name="buscar_usuario">Buscar Usuario</string>
+    <string name="crear">Crear</string>
+    <string name="actualizar">Actualizar</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="confirmar_eliminacion">Confirmar eliminación</string>
+    <string name="mensaje_confirmacion">¿Está seguro que desea eliminar este usuario?</string>
+    <string name="error
+    _campos">Complete todos los campos</string>
+    <string name="error_id">Ingrese un ID válido</string>
+    <string name="user_info_format">ID: %1$d | Email: %2$s</string>
+    <string name="error_loading_users">Error al cargar usuarios: %1$d</string>
+    <string name="connection_error">Error de conexión: %1$s</string>
+    <string name="user_not_found">Usuario no encontrado</string>
 </resources>

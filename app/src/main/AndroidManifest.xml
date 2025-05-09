@@ -34,5 +34,12 @@
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
 
+        <!-- Nueva actividad agregada -->
+        <activity
+            android:name=".GestionUsuariosActivity"
+            android:label="Gestión de Usuarios"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
+
     </application>
 </manifest>

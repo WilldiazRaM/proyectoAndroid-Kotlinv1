@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -23,7 +24,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import android.util.Log
-
 
 class MainActivity : ComponentActivity() {
     private val TAG = "MainActivity" // Constante para el tag de logs
@@ -42,6 +42,10 @@ class MainActivity : ComponentActivity() {
                         onRegisterClick = {
                             Log.d(TAG, "Botón registro clickeado") // Log de click
                             openRegistrationActivity()
+                        },
+                        onAdminClick = {
+                            Log.d(TAG, "Botón administración clickeado") // Log de click
+                            openAdminActivity()
                         }
                     )
                 }
@@ -60,7 +64,21 @@ class MainActivity : ComponentActivity() {
             e.printStackTrace()
         }
     }
+
+    private fun openAdminActivity() {
+        try {
+            Log.d(TAG, "Intentando abrir GestionUsuariosActivity")
+            val intent = Intent(this, GestionUsuariosActivity::class.java)
+            startActivity(intent)
+            Log.d(TAG, "GestionUsuariosActivity iniciada con éxito")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error al abrir GestionUsuariosActivity", e) // Log de error
+            e.printStackTrace()
+            // Puedes mostrar un Toast al usuario si lo deseas
+        }
+    }
 }
+
 @Composable
 fun MyAppTheme(content: @Composable () -> Unit) {
     MaterialTheme(content = content)
@@ -69,14 +87,16 @@ fun MyAppTheme(content: @Composable () -> Unit) {
 @Composable
 fun MainScreen(
     onRegisterClick: () -> Unit,
+    onAdminClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Mejor manejo de temas y estilos
         Text(
             text = "Bienvenido",
             style = MaterialTheme.typography.headlineMedium,
@@ -85,10 +105,10 @@ fun MainScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Botón más accesible
+        // Botón de Registro
         Button(
             onClick = onRegisterClick,
-            modifier = Modifier.fillMaxWidth(0.8f),
+            modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
@@ -103,10 +123,29 @@ fun MainScreen(
                 style = MaterialTheme.typography.labelLarge
             )
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Nuevo Botón de Administración
+        Button(
+            onClick = onAdminClick,
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.secondary,
+                contentColor = MaterialTheme.colorScheme.onSecondary
+            ),
+            elevation = ButtonDefaults.buttonElevation(
+                defaultElevation = 8.dp,
+                pressedElevation = 4.dp
+            )
+        ) {
+            Text(
+                text = "Administración de Usuarios",
+                style = MaterialTheme.typography.labelLarge
+            )
+        }
     }
 }
-
-
 
 @Preview(showBackground = true)
 @Composable
@@ -115,6 +154,10 @@ fun MainScreenPreview() {
         val context = LocalContext.current
         MainScreen(
             onRegisterClick = {
+                // Simulación para el preview
+                context.startActivity(Intent(context, MainActivity::class.java))
+            },
+            onAdminClick = {
                 // Simulación para el preview
                 context.startActivity(Intent(context, MainActivity::class.java))
             }

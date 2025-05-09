@@ -40,14 +40,14 @@ class RegistroActivity : AppCompatActivity() {
             val correo = etEmail.text.toString()
 
             if (nombre.isNotEmpty() && contrasena.isNotEmpty() && correo.isNotEmpty()) {
-                registrarUsuario(nombre, contrasena, correo)
+                crearUsuario(nombre, contrasena, correo)
             } else {
                 Toast.makeText(this, "Por favor, complete todos los campos.", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun registrarUsuario(nombre: String, contrasena: String, correo: String) {
+    private fun crearUsuario(nombre: String, contrasena: String, correo: String) {
         val usuario = Usuario(
             nombre = nombre,
             correo = correo,
@@ -55,7 +55,7 @@ class RegistroActivity : AppCompatActivity() {
         )
 
         val apiService = RetrofitClient.instance
-        val call = apiService.registrarUsuario(usuario)
+        val call = apiService.crearUsuario(usuario)
 
         call.enqueue(object : Callback<Usuario> {
             override fun onResponse(call: Call<Usuario>, response: Response<Usuario>) {
